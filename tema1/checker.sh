@@ -3,6 +3,7 @@
 ## CONSTANTS ##
 CURRENT_DIRECTORY=`pwd`
 RESOURCES_DIRECTORY="$CURRENT_DIRECTORY/checker/resources"
+RESOURCES_DIRECTORY_DIFF=`sed {s/' '/'\\ '/} <<< $RESOURCES_DIRECTORY`
 GOOD_TESTS=0
 GOOD_BONUS=`echo -ne "Starting audit...\nAudit done.\n"`
 BAD_BONUS=0
@@ -32,8 +33,7 @@ function checkTest
     java main.Main "$RESOURCES_DIRECTORY/in/$1.in" "$RESOURCES_DIRECTORY/out/$1.out" > /dev/null
     
 	if [ $? -eq 0 ]; then
-        `diff -Bw -u --ignore-all-space $RESOURCES_DIRECTORY/out/$1.out $RESOURCES_DIRECTORY/res/$1.in.res &> /dev/null`
-        DIFF_RESULT=$?
+        DIFF_RESULT=`echo "diff -Bw -u --ignore-all-space $RESOURCES_DIRECTORY_DIFF/out/$1.out $RESOURCES_DIRECTORY_DIFF/res/$1.in.res &> /dev/null; echo $?" | bash`
 
         if [ $DIFF_RESULT -eq 0 ]; then
         	echo -ne "OK\n"
